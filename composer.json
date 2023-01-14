@@ -1,0 +1,21 @@
+{
+    "name": "trybaio/magento2-module-tryba",
+    "description": "Tryba Payment Gateway For Magento 2",
+    "require": {
+        "php": ">=7.4"
+    },
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "keywords": ["tryba", "magento", "magento 2", "plugin", "extension", "payment", "gateway"],
+    "license": [
+        "MIT"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "WAF\\Tryba\\": ""
+        }
+    }
+}

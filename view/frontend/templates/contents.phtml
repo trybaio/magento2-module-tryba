@@ -1,0 +1,19 @@
+<div class='tryba'>
+	<div class='errors'>
+		<?php if($this->getMessages()): ?>
+			<?php foreach($this->getMessages() as $message): ?>
+				<div class='alert alert-danger'><p style='color:red'><?= $message ?></p></div>
+			<?php endforeach; ?>
+		<?php else: ?>
+			<div style="width:200px; margin:auto; margin-top:20px">
+				<center>Redirecting you to Tryba</center>
+			</div>
+			<form name='trybapaymentredirect' action='<?= $this->getAction() ?>'>
+				<input type='hidden' name='embed' value='form'>
+			</form>
+			<script>
+				document.trybapaymentredirect.submit();
+			</script>
+		<?php endif; ?>
+	</div>
+</div>
