@@ -63,7 +63,7 @@ Step-by-step to install the Magento 2 extension through Composer:
 5.  If Magento is running in production mode you also need to redeploy the static content:
     - php bin/magento setup:static-content:deploy
 
-6.  After the installation: Go to your Magento admin portal and open 'Stores' > 'Configuration' > 'Payment Methods' > 'Tryba'.
+6.  After the installation: Go to your Magento admin portal and open 'Stores' > 'Configuration' > 'SALES' > 'Payment Methods' > 'OTHER PAYMENT METHODS' > 'Tryba Payment Getway'.
 
 
 ## Additional ways to install ##
