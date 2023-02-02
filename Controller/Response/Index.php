@@ -68,10 +68,15 @@ class Index extends \Magento\Framework\App\Action\Action
 				$storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
 				$public_key = $this->config->getValue("payment/tryba/public_key", $storeScope);
 				$secret_key = $this->config->getValue("payment/tryba/secret_key", $storeScope);
+                $test_mode = $this->config->getValue("payment/tryba/test_mode", $storeScope);
 				$this->logger->info("Public Key: $public_key | Secret Key: $secret_key");
 				
 				// get payment response from tryba
-                $url = 'https://checkout.tryba.io/api/v1/payment-intent/' . $payment_id;
+                if ($test_mode) {
+                    $url = 'https://sandbox.checkout.tryba.io/api/v1/payment-intent/' . $payment_id;
+                } else {
+                    $url = 'https://checkout.tryba.io/api/v1/payment-intent/' . $payment_id;
+                }
                 $curl = curl_init();
                 curl_setopt($curl, CURLOPT_URL, $url);
                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -135,6 +140,10 @@ class Index extends \Magento\Framework\App\Action\Action
                                 $order->save();
                                 
                                 $this->logger->info("Payment for $payment_id was credited.");
+                                //
+                                $this->checkoutSession->setLastSuccessQuoteId($order->getQuoteId());
+                                $this->checkoutSession->setLastQuoteId($order->getQuoteId());
+                                $this->checkoutSession->setLastOrderId($order->getEntityId());
                                 $this->_redirect($this->urlBuilder->getUrl('checkout/onepage/success/',  ['_secure' => true]));
                             } else if ($payment_status === "CANCELLED") {
                                 $transaction = $this->transactionRepository->getByTransactionId(

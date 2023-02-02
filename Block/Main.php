@@ -72,7 +72,8 @@ class Main extends \Magento\Framework\View\Element\Template {
 				$storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
 				$public_key = $this->config->getValue("payment/tryba/public_key", $storeScope);
 				$secret_key = $this->config->getValue("payment/tryba/secret_key", $storeScope);
-				$this->logger->info("Public Key: $public_key | Secret Key: $secret_key");
+                $test_mode = $this->config->getValue("payment/tryba/test_mode", $storeScope);
+				$this->logger->info("Public Key: $public_key | Secret Key: $secret_key | Test Mode: $test_mode");
 				
 				$api_data['transaction_id'] = time() . "-" . $order->getRealOrderId();
 				$api_data['email'] = $billing->getEmail();
@@ -142,9 +143,13 @@ class Main extends \Magento\Framework\View\Element\Template {
                 }
 				
                 if (!isset($method_data['errors'])) {
-                    $this->logger->info("Date sent for creating order " . print_r($api_data, true));
+                    $this->logger->info("Data sent for creating order " . print_r($api_data, true));
                     // post data to tryba
-                    $url = 'https://checkout.tryba.io/api/v1/payment-intent/create';
+                    if ($test_mode) {
+                        $url = 'https://sandbox.checkout.tryba.io/api/v1/payment-intent/create';
+                    } else {
+                        $url = 'https://checkout.tryba.io/api/v1/payment-intent/create';
+                    }
         
                     $postfields = array(
                         "amount" => $api_data['amount'],

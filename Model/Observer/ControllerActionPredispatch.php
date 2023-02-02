@@ -8,18 +8,21 @@ use Magento\Sales\Model\OrderFactory;
 class ControllerActionPredispatch implements ObserverInterface {
 	protected $checkoutSession;
 	protected $orderFactory;
+	protected $_redirect;
 	
     public function __construct (
 		Session $checkoutSession,
-		OrderFactory $orderFactory
+		OrderFactory $orderFactory,
+		\Magento\Framework\App\Response\Http $redirect
     ) {
         $this->checkoutSession = $checkoutSession;
         $this->orderFactory = $orderFactory;
+		$this->_redirect = $redirect;
     }
 	
     public function execute(\Magento\Framework\Event\Observer $observer) {
 		$request = $observer->getData('request'); 
-		if ($request->getModuleName() == "checkout" and $request->getActionName()== "success") {
+		if ($request->getModuleName() == "checkout" && $request->getActionName() == "success") {
 			$orderId = $this->checkoutSession->getLastOrderId();
 			if ($orderId) {
 				$order = $this->orderFactory->create()->load($orderId);
@@ -27,11 +30,9 @@ class ControllerActionPredispatch implements ObserverInterface {
 					$this->urlBuilder = \Magento\Framework\App\ObjectManager::getInstance()
 							->get('Magento\Framework\UrlInterface');
 					$url = $this->urlBuilder->getUrl("tryba/redirect");
-					header("Location: $url");
-					die();
+					$this->_redirect->setRedirect($url);
 				}
 			}
 		}
-		return;
 	}
 }
